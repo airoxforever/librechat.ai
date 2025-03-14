@@ -28,6 +28,7 @@ endpoints:
   # OpenRouter configuration with selected models
   custom:
     - name: "OpenRouter"
+      endpointType: "custom"
       apiKey: "${OPENROUTER_KEY}"
       baseURL: "https://openrouter.ai/api/v1"
       models:
@@ -44,6 +45,7 @@ endpoints:
 
   # Direct Google integration with latest models
   google:
+    endpointType: "google"
     apiKey: "${GOOGLE_API_KEY}"
     models:
       default: [
