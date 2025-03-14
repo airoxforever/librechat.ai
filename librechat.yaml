@@ -171,12 +171,3 @@ presets:
          - Flexibility options
 
       Before starting planning, please request any missing curriculum information.
-
-# RAG configuration for document handling
-rag:
-  enabled: true
-  embedModel: "openai"
-  apiKey: "${OPENAI_API_KEY}"
-  maxTokens: 4000
-  similarityThreshold: 0.7
-  maxResults: 5 
