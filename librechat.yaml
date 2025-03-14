@@ -1,0 +1,184 @@
+version: 1.2.2
+
+interface:
+  appTitle: "Language Teaching Assistant"
+  # Enable all advanced features for teacher
+  endpointsMenu: true
+  modelSelect: true
+  parameters: true
+  sidePanel: true
+  presets: true
+  prompts: true
+  bookmarks: true
+  multiConvo: true
+  # Show system prompt editing
+  systemPrompts: true
+  # Enable file handling
+  files:
+    enabled: true
+    uploadSync: true
+    preview: true
+    maxSize: 10 # MB
+    supportedTypes:
+      - "text/plain"
+      - "text/markdown"
+      - "application/json"
+      - "application/pdf"
+      - "application/msword"
+      - "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+# Endpoints configuration
+endpoints:
+  # OpenRouter configuration with selected models
+  custom:
+    - name: "OpenRouter"
+      apiKey: "${OPENROUTER_KEY}"
+      baseURL: "https://openrouter.ai/api/v1"
+      models:
+        default: [
+          "qwen/qwen2.5-32b-instruct",
+          "deepseek/deepseek-r1",
+          "google/gemini-2.0-flash-lite-001",
+          "anthropic/claude-3.7-sonnet:beta",
+          "anthropic/claude-3.5-haiku-20241022:beta",
+          "google/gemini-2.0-pro-exp-02-05:free",
+          "deepseek/deepseek-r1-distill-llama-70b"
+        ]
+        fetch: true
+      titleConvo: true
+      titleModel: "deepseek/deepseek-r1"
+      summarize: true
+      summaryModel: "deepseek/deepseek-r1"
+      modelDisplayLabel: "Teaching Assistant"
+      dropParams: ["stop"]
+
+  # Direct Google integration with latest models
+  google:
+    apiKey: "${GOOGLE_API_KEY}"
+    models:
+      default: [
+        # Latest production models
+        "gemini-2.0-flash",
+        "gemini-2.0-flash-lite",
+        "gemini-1.5-pro",
+        "gemini-1.5-flash",
+        "gemini-1.0-pro-vision",
+        # Experimental models
+        "gemini-2.0-pro-exp-02-05",
+        "gemini-2.0-flash-thinking-exp-01-21",
+        "learnlm-1.5-pro-experimental"
+      ]
+    titleConvo: true
+    titleModel: "gemini-2.0-flash-lite"
+
+# Preset configurations based on original prompts
+presets:
+  - name: "Lesson Analysis"
+    endpoint: "openRouter"
+    model: "deepseek/deepseek-r1"
+    parameters:
+      temperature: 0.7
+      maxTokens: 8000
+    systemPrompt: |
+      You are a highly valued and respected language teacher analyzing lessons and providing detailed feedback.
+
+      CORE FUNCTIONALITY:
+      1. Required Materials:
+         - Previous 5 lesson transcripts
+         - Student profile and progress notes
+         - Teaching objectives and methodology used
+
+      2. Analysis Structure:
+         - Initial verification of lesson materials
+         - Content analysis and teaching effectiveness
+         - Student's language patterns and errors
+         - Areas for improvement
+         - Teacher commitments and promises
+
+      3. Feedback Format:
+         - Detailed analysis of teaching methodology
+         - Student engagement assessment
+         - Learning outcomes evaluation
+         - Specific recommendations
+         - Progress tracking
+
+      4. Quality Control:
+         - Compare with previous lessons
+         - Track recurring patterns
+         - Identify successful strategies
+         - Note areas needing attention
+
+      Before starting analysis, please request any missing materials from the list above.
+
+  - name: "Exercise Generation"
+    endpoint: "openRouter"
+    model: "deepseek/deepseek-r1"
+    parameters:
+      temperature: 0.8
+      maxTokens: 8000
+    systemPrompt: |
+      You are an expert in creating personalized language exercises.
+
+      EXERCISE CREATION GUIDELINES:
+      1. Required Information:
+         - Student's current level
+         - Recent lesson topics
+         - Problem areas to focus on
+         - Preferred learning style
+
+      2. Exercise Types:
+         - Translation practice (7-15 sentences)
+         - Error correction exercises (4-10 examples)
+         - Interactive reading passages
+         - Multi-stage storytelling exercises
+         - Vocabulary management tables
+
+      3. Format Requirements:
+         - Clear instructions
+         - Example answers
+         - Progression path
+         - Difficulty indicators
+         - Time estimates
+
+      Before creating exercises, please request any missing student information.
+
+  - name: "Topic Planning"
+    endpoint: "openRouter"
+    model: "deepseek/deepseek-r1"
+    parameters:
+      temperature: 0.7
+      maxTokens: 8000
+    systemPrompt: |
+      You are a curriculum planning specialist.
+
+      PLANNING REQUIREMENTS:
+      1. Required Information:
+         - Current curriculum overview
+         - Student progress reports
+         - Learning objectives
+         - Available teaching resources
+
+      2. Planning Elements:
+         - Focused topic lists (20 specific topics)
+         - Grammar topic lists
+         - Personalized learning paths
+         - Progress tracking guidelines
+         - Student-specific recommendations
+
+      3. Output Format:
+         - Structured curriculum plan
+         - Timeline recommendations
+         - Resource allocation
+         - Assessment points
+         - Flexibility options
+
+      Before starting planning, please request any missing curriculum information.
+
+# RAG configuration for document handling
+rag:
+  enabled: true
+  embedModel: "openai"
+  apiKey: "${OPENAI_API_KEY}"
+  maxTokens: 4000
+  similarityThreshold: 0.7
+  maxResults: 5 
