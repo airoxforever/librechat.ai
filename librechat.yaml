@@ -1,3 +1,4 @@
+# LibreChat Configuration v1.2.2
 version: 1.2.2
 
 interface:
@@ -57,16 +58,13 @@ endpoints:
     apiKey: "${GOOGLE_API_KEY}"
     models:
       default: [
-        # Latest production models
         "gemini-2.0-flash",
         "gemini-2.0-flash-lite",
         "gemini-1.5-pro",
         "gemini-1.5-flash",
         "gemini-1.0-pro-vision",
-        # Experimental models
         "gemini-2.0-pro-exp-02-05",
-        "gemini-2.0-flash-thinking-exp-01-21",
-        "learnlm-1.5-pro-experimental"
+        "gemini-2.0-flash-thinking-exp-01-21"
       ]
     titleConvo: true
     titleModel: "gemini-2.0-flash-lite"
