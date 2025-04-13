@@ -32,20 +32,19 @@ endpoints:
       apiKey: "${OPENROUTER_KEY}" # Set via environment variable
       baseURL: "https://openrouter.ai/api/v1"
       models:
-        default: [ # Models explicitly available for this endpoint
-          "anthropic/claude-3.7-sonnet:beta",
-          "anthropic/claude-3.5-haiku-20241022:beta", # Fast/cheap model
-          "meta-llama/llama-4-maverick",
-          "qwen/qwen2.5-32b-instruct",
-          "x-ai/grok-3-beta",
-          "x-ai/grok-vision-beta",
-          "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",
-          "google/gemini-2.5-pro-preview-03-25",
-          "google/gemini-2.5-pro-exp-03-25:free", # Kept free experimental Gemini
-          "deepseek/deepseek-r1",
-          "deepseek/deepseek-r1-distill-llama-70b",
-          "deepseek/deepseek-chat-v3-0324"
-        ]
+        default: # Models explicitly available for this endpoint
+          - "anthropic/claude-3.7-sonnet:beta"
+          - "anthropic/claude-3.5-haiku-20241022:beta" # Fast/cheap model
+          - "meta-llama/llama-4-maverick"
+          - "qwen/qwen2.5-32b-instruct"
+          - "x-ai/grok-3-beta"
+          - "x-ai/grok-vision-beta"
+          - "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"
+          - "google/gemini-2.5-pro-preview-03-25"
+          - "google/gemini-2.5-pro-exp-03-25:free" # Kept free experimental Gemini
+          - "deepseek/deepseek-r1"
+          - "deepseek/deepseek-r1-distill-llama-70b"
+          - "deepseek/deepseek-chat-v3-0324"
       fetch: false # IMPORTANT: Set to false to ONLY show models listed above for OpenRouter
       titleConvo: true
       titleModel: "anthropic/claude-3.5-haiku-20241022:beta" # Use a fast/cheap model for titles
@@ -56,11 +55,10 @@ endpoints:
   google:
     apiKey: "${GOOGLE_API_KEY}" # Set via environment variable if using Google directly
     models:
-      default: [ # Example models for direct Google access
-          "gemini-1.5-pro-latest",
-          "gemini-1.5-flash-latest",
-          "gemini-pro"
-        ]
+      default: # Example models for direct Google access
+        - "gemini-1.5-pro-latest"
+        - "gemini-1.5-flash-latest"
+        - "gemini-pro"
     titleConvo: true
     titleModel: "gemini-1.5-flash-latest" # Use a fast Google model for titles here
     modelDisplayLabel: "Google AI"
@@ -108,10 +106,9 @@ modelSpecs:
         - "tools"
         - "file_search" # To potentially find profiles in attached text files
 
-  # Allows selecting standard endpoints alongside the agent(s) defined above
-  addedEndpoints:
-    - "openrouter" # Make OpenRouter models selectable
-    - "google"     # Make Google models selectable (if configured and API key provided)
+addedEndpoints:
+  - "openrouter"
+  - "google"
 
 # Token Balance Configuration
 balance:
