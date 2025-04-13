@@ -1,0 +1,125 @@
+# Configuration version
+version: 1.2.4
+
+# Interface settings
+interface:
+  appTitle: "Language Teaching Assistant"
+  modelSelect: true # Enables the model/endpoint selection dropdown (replaces deprecated endpointsMenu)
+  parameters: true
+  sidePanel: true
+  systemPrompts: true # Allows using System Prompt Presets
+  files:
+    enabled: true # Enable file uploads (uses local storage by default, NOT Firebase unless configured separately)
+    uploadSync: true
+    preview: true
+    maxSize: 10 # Max file size in MB
+    supportedTypes:
+      - "text/plain"
+      - "text/markdown"
+      - "application/json"
+      - "application/pdf"
+      - "application/msword"
+      - "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      - "image/png" # Added image types
+      - "image/jpeg"
+      - "image/webp"
+
+# Endpoints configuration
+endpoints:
+  # --- OpenRouter Custom Endpoint ---
+  custom:
+    - name: "OpenRouter"
+      apiKey: "${OPENROUTER_KEY}" # Set via environment variable
+      baseURL: "https://openrouter.ai/api/v1"
+      models:
+        default: [ # Models explicitly available for this endpoint
+          "anthropic/claude-3.7-sonnet:beta",
+          "anthropic/claude-3.5-haiku-20241022:beta", # Fast/cheap model
+          "meta-llama/llama-4-maverick",
+          "qwen/qwen2.5-32b-instruct",
+          "x-ai/grok-3-beta",
+          "x-ai/grok-vision-beta",
+          "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",
+          "google/gemini-2.5-pro-preview-03-25",
+          "google/gemini-2.5-pro-exp-03-25:free", # Kept free experimental Gemini
+          "deepseek/deepseek-r1",
+          "deepseek/deepseek-r1-distill-llama-70b",
+          "deepseek/deepseek-chat-v3-0324"
+        ]
+      fetch: false # IMPORTANT: Set to false to ONLY show models listed above for OpenRouter
+      titleConvo: true
+      titleModel: "anthropic/claude-3.5-haiku-20241022:beta" # Use a fast/cheap model for titles
+      forcePrompt: false # Recommended: Does not prepend a default system prompt to yours
+      modelDisplayLabel: "OpenRouter"
+
+  # --- Google AI Endpoint (Optional, requires GOOGLE_API_KEY) ---
+  google:
+    apiKey: "${GOOGLE_API_KEY}" # Set via environment variable if using Google directly
+    models:
+      default: [ # Example models for direct Google access
+          "gemini-1.5-pro-latest",
+          "gemini-1.5-flash-latest",
+          "gemini-pro"
+        ]
+    titleConvo: true
+    titleModel: "gemini-1.5-flash-latest" # Use a fast Google model for titles here
+    modelDisplayLabel: "Google AI"
+
+  # --- Agents Endpoint Configuration ---
+  agents:
+    disableBuilder: false # Allow users to create agents via the UI
+    allowedProviders: # Specify which endpoint providers agents can use
+      - "openrouter"
+      - "google"
+      - "anthropic" # Assuming you might add an Anthropic endpoint later or use via OpenRouter
+    capabilities: # Enabled Agent capabilities
+      - "actions"
+      - "tools"
+      # - "ocr" # Disabled as requested
+      - "artifacts"
+      - "chain"
+      - "file_search"
+    # recursionLimit: 25
+    # maxRecursionLimit: 50
+
+  # --- MCP Server Configuration (for custom tools) ---
+  mcp:
+    timeout: 30000
+    initTimeout: 60000
+
+# Model Specifications (includes predefined Agents)
+modelSpecs:
+  # Agent definition 1: Student Profile Updater
+  - name: "Student Profile Updater (Agent/Gemini-Exp)" # Display name in UI
+    endpoint: "openrouter" # Use OpenRouter to access the specific free model
+    override:
+      model: "google/gemini-2.5-pro-exp-03-25:free" # The specific free experimental model
+      instructions: | # Agent's system instructions
+        "Analyze the current conversation and any provided context (like previous profile versions in the chat history or attached files).
+        Your primary goal is to update the student's learning profile.
+        1. Locate the most recent version of the student's profile in the context.
+        2. Update the profile's date or version identifier (e.g., increment the date by one day or the version number by one). If no date/version is found, add today's date.
+        3. Identify NEW information from the latest parts of the conversation regarding the student's progress, difficulties, preferences, or goals.
+        4. Integrate this new information into the existing profile structure. Do NOT create a new profile from scratch.
+        5. Output ONLY the complete, updated student profile in a clear, structured format (e.g., Markdown)."
+      capabilities: # Capabilities needed for this agent
+        - "artifacts" # For formatted output
+        - "chain"
+        - "tools"
+        - "file_search" # To potentially find profiles in attached text files
+
+  # Allows selecting standard endpoints alongside the agent(s) defined above
+  addedEndpoints:
+    - "openrouter" # Make OpenRouter models selectable
+    - "google"     # Make Google models selectable (if configured and API key provided)
+
+# Token Balance Configuration
+balance:
+  enabled: true # Enable token balance checking
+  startBalance: 1000000 # Starting balance for new users
+  autoRefillEnabled: true # Enable automatic refills
+  refillIntervalValue: 1
+  refillIntervalUnit: "days" # (seconds, minutes, hours, days, weeks, months)
+  refillAmount: 50000 # Amount of tokens added per refill interval
+
+# --- OCR section removed as requested ---
