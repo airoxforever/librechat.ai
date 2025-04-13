@@ -27,18 +27,17 @@ endpoints:
       baseURL: "https://openrouter.ai/api/v1"
       models:
         default: [
-          "qwen/qwen2.5-32b-instruct",
-          "deepseek/deepseek-r1",
-          "anthropic/claude-3.7-sonnet:beta",
-          "anthropic/claude-3.5-haiku-20241022:beta",
-          "deepseek/deepseek-r1-distill-llama-70b",
-          "deepseek/deepseek-v3-base:free",
-          "google/gemini-2.5-pro-preview-03-25",
-          "google/gemini-2.5-pro-exp-03-25:free",
-          "deepseek/deepseek-chat-v3-0324",
-          "meta-llama/llama-4-maverick:free",
-          "meta-llama/llama-4-maverick",
-          "deepseek/deepseek-r1-zero:free"
+          "anthropic/claude-3.7-sonnet:beta"
+          "anthropic/claude-3.5-haiku-20241022:beta" # Fast/cheap model
+          "meta-llama/llama-4-maverick"
+          "qwen/qwen2.5-32b-instruct"
+          "x-ai/grok-3-beta"
+          "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"
+          "google/gemini-2.5-pro-preview-03-25"
+          "google/gemini-2.5-pro-exp-03-25:free" # Kept free experimental Gemini
+          "deepseek/deepseek-r1"
+          "deepseek/deepseek-r1-distill-llama-70b"
+          "deepseek/deepseek-chat-v3-0324"
         ]
       fetch: true
       titleConvo: true
