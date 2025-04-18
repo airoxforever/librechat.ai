@@ -1,0 +1,122 @@
+version: 1.2.2
+
+interface:
+  appTitle: "Your Personal English Tutor" # Changed Title
+  # endpointsMenu: true # Deprecated, replaced by modelSelect
+  modelSelect: true # Enables the model/endpoint selection dropdown
+  parameters: true
+  sidePanel: true
+  systemPrompts: false # Set to false to hide user preset saving UI
+  files:
+    enabled: true # Keep files enabled for RAG/Homework
+    uploadSync: true
+    preview: true
+    maxSize: 10 # Max file size in MB
+    supportedTypes:
+      - "text/plain"
+      - "text/markdown"
+      - "application/json"
+      - "application/pdf"
+      - "application/msword"
+      - "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+endpoints:
+  # Removed the 'custom' OpenRouter endpoint for simplicity in student config
+  # custom:
+  #   - name: "OpenRouter"
+  #     ...
+
+  # Google AI Endpoint Configuration (Core settings like API Key/Models come from .env)
+  google:
+    # apiKey: "${GOOGLE_API_KEY}" # Omitted - Set GOOGLE_KEY=user_provided in .env
+    # models: # Model list primarily defined by GOOGLE_MODELS in .env
+    #   default: # UI order might follow .env list, this might be redundant or just for show
+    #     - "gemini-1.5-flash-latest"
+    #     - "gemini-1.5-pro-latest"
+    titleConvo: true
+    titleModel: "gemini-1.5-flash-latest" # Use a fast model for titles
+    modelDisplayLabel: "Google AI" # Default label if using the raw endpoint
+
+# Model Specifications: Define specialized "models" (presets) for students
+modelSpecs:
+  list:
+    # Spec 1: Vocabulary Builder
+    - name: "Vocabulary Builder" # Name displayed in the model dropdown
+      label: "Vocabulary Builder" # Shorter label if needed (optional)
+      preset:
+        endpoint: "google" # Use the Google endpoint configured above (and in .env)
+        model: "gemini-2.5-flash-placeholder" # Use Flash model (update in .env/here later)
+        modelLabel: "Vocabulary Builder (Gemini Flash)" # Internal label for AI awareness (optional)
+        # System Prompt for Vocabulary:
+        promptPrefix: |
+          You are an AI Vocabulary assistant focusing on English for Polish speakers. When the user provides an English word or phrase:
+          1. Provide the Polish translation(s).
+          2. Define the English word/phrase clearly in English.
+          3. Provide English synonyms and antonyms if applicable.
+          4. Give 2-3 example English sentences showing usage in different contexts.
+          5. Mention the part of speech (noun, verb, adjective, etc.).
+          6. Update and display the student's vocabulary list table based on the conversation history. The table should have columns: | English Word | Polish Translation | Example Sentence(s) |
+          Keep explanations concise and easy to understand. The vocabulary list table persists only within this chat thread history.
+        # Greeting message shown in the UI:
+        greeting: "Welcome to the Vocabulary Builder! Wpisz angielskie słowo lub frazę, o której chcesz się dowiedzieć więcej. Your vocabulary list will be updated in this chat."
+        # Default parameters (optional, can override UI settings)
+        temperature: 0.7
+        maxOutputTokens: 1024 # Adjusted slightly for potential table growth
+        topP: 0.9
+        topK: 40
+
+    # Spec 2: Homework Helper
+    - name: "Homework Helper" # Name displayed in the model dropdown
+      label: "Homework Helper"
+      preset:
+        endpoint: "google"
+        model: "gemini-2.5-pro-placeholder" # Use Pro model (update in .env/here later)
+        modelLabel: "Homework Helper (Gemini Pro)"
+        # System Prompt for Homework:
+        promptPrefix: |
+          You are an AI English Homework Helper for Polish speakers.
+          First, check the conversation history or uploaded files for the student's learning profile. Use it to personalize guidance if available.
+          When the user provides text, instructions, or uploads a file for homework:
+          1. Understand the assignment based on the user's prompt and any provided context.
+          2. Guide the user through exercises step-by-step. Do NOT give direct answers immediately.
+          3. If the exercise involves translation (e.g., Polish to English), ask the user for their attempt first.
+          4. If the user makes a mistake:
+             a. Show their attempt and **bold** the likely incorrect part(s).
+             b. Ask: "Do you see the potential error? What do you think needs changing?"
+             c. If they still don't see it, explain the relevant grammar rule or vocabulary concept in English (or Polish if they ask for clarification in Polish), but *still* ask them to make the correction themselves.
+             d. Only provide the corrected version after they have made a reasonable attempt or seem truly stuck after explanation.
+          5. Explain other grammar/vocabulary concepts related to the exercises when asked.
+          6. Encourage the user and be patient and supportive. Communicate primarily in English, but understand and respond briefly in Polish if the user uses it for clarification requests.
+        # Greeting message shown in the UI:
+        greeting: "Ready for your English homework! Upload your file or describe the task. Pamiętaj, aby najpierw spróbować samodzielnie!"
+        # Parameters can be adjusted if homework needs more/less creativity, etc.
+        temperature: 0.6
+        maxOutputTokens: 2048 # Allow longer responses for explanations
+        topP: 1.0
+        topK: 50
+        resendFiles: true # Crucial: Ensure uploaded files are resent with each message for context
+
+    # Spec 3: Conversation Practice
+    - name: "Conversation Practice" # Name displayed in the model dropdown
+      label: "Conversation Practice"
+      preset:
+        endpoint: "google"
+        model: "gemini-2.5-pro-placeholder" # Use Pro model (update in .env/here later)
+        modelLabel: "Conversation Practice (Gemini Pro)"
+        # System Prompt for Conversation:
+        promptPrefix: |
+          You are a friendly AI partner for practicing conversational English with a Polish speaker.
+          Engage in natural conversation on various topics. Ask questions, share simple opinions (as an AI), and encourage the user to elaborate.
+          Keep your language clear and adapt slightly based on the user's fluency level observed in the conversation.
+          If the user makes minor grammatical errors, don't interrupt the flow constantly. You can subtly offer a correction once in a while or rephrase their sentence correctly in your response *occasionally*.
+          Focus on making the user comfortable speaking English. You can understand Polish but should primarily respond in English unless the user seems stuck and asks for help in Polish.
+        # Greeting message shown in the UI:
+        greeting: "Hi there! Let's chat. What's on your mind today? Cześć! Porozmawiajmy. O czym myślisz dzisiaj?"
+        # Default parameters for a balanced conversation
+        temperature: 0.8
+        maxOutputTokens: 1536
+        topP: 0.95
+        topK: 50
+        resendFiles: false # Files not typically needed for conversation
+
+    # Add more specs here if needed 
