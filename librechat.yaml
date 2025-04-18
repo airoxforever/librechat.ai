@@ -41,6 +41,6 @@ endpoints:
         ]
       fetch: true
       titleConvo: true
-      titleModel: "current_model"
+      titleModel: "anthropic/claude-3.5-haiku-20241022:beta"
       forcePrompt: false
       modelDisplayLabel: "OpenRouter"
