@@ -51,7 +51,7 @@ interface:
   bookmarks: true
   multiConvo: true
   agents: true
-  customWelcome: "Welcome to LibreChat!"
+  customWelcome: "Hey {{user.name}}! Welcome to LibreChat"
   runCode: true
 ```
 
@@ -94,6 +94,8 @@ interface:
 
 ## endpointsMenu
 
+- ⚠️ **Deprecated:** This setting is deprecated and no longer has any effect on v0.7.8 and later. Use `modelSelect` to enable configured endpoint options. If you would like to limit the available endpoints while using model specs, configure the [`modelSpecs.addedEndpoints`](/docs/configuration/librechat_yaml/object_structure/model_specs#addedendpoints) setting.
+
 **Key:**
 <OptionTable
   options={[
@@ -119,6 +121,10 @@ interface:
 />
 
 **Default:** `true`
+
+**Notes:**
+- This is required to be `true` if using [`modelSpecs.addedEndpoints`](/docs/configuration/librechat_yaml/object_structure/model_specs#addedendpoints).
+- If `modelSpecs.addedEndpoints` is used and `interface.modelSelect` is not explicitly set, it defaults to `true`.
 
 **Example:**
 ```yaml filename="interface / modelSelect"
@@ -247,14 +253,12 @@ interface:
   agents: true
 ```
 
----
-
 ## customWelcome
 
 **Key:**
 <OptionTable
   options={[
-    ['customWelcome', 'String', 'Allows administrators to define a custom welcome message for the chat interface.', 'This message will be displayed to users upon entering the chat, providing a personalized greeting.'],
+    ['customWelcome', 'String', 'Allows administrators to define a custom welcome message for the chat interface, with the option to personalize it using the {{user.name}} parameter.'],
   ]}
 />
 
@@ -263,8 +267,10 @@ interface:
 **Example:**
 ```yaml filename="interface / customWelcome"
 interface:
-  customWelcome: "Welcome to LibreChat! Enjoy your conversation."
+    customWelcome: "Hey {{user.name}}! Welcome to LibreChat"
 ```
+
+**Note:** You can use `{{user.name}}` within the `customWelcome` message to dynamically insert the user's name for a personalized greeting experience.
 
 ## runCode
 
@@ -286,4 +292,3 @@ Enables/disables the "Run Code" button for Markdown Code Blocks. More info on th
 interface:
   runCode: true
 ```
-
